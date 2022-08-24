@@ -6,4 +6,6 @@ const router = express.Router()
 
 router.get('/profile', authenticated, UserController.getProfile)
 
+router.post('/profile', authenticated, UserController.editProfile)
+
 module.exports = router
