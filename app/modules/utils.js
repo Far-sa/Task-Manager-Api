@@ -19,6 +19,7 @@ exports.tokenGenerator = payload => {
 
 exports.verifyJwtToken = token => {
   const result = jwt.verify(token, process.env.JWT_SECRET)
-  if (!result.username) throw { status: 401, message: 'Unauthorized Token' }
+  if (!result.username)
+    throw { status: 401, message: 'Please enter to your AccOUNT' }
   return result
 }
