@@ -40,9 +40,26 @@ class UserController {
   }
   async uploadProfileImage (req, res, next) {
     try {
-      console.log(req.file)
+      const userId = req.user._id
+
+      //? create file path for windows
+      //const filePath = req.file?.path.replace("\\\\", "/").substring(7)
+      //? create file path for unix
+      const filePath = req.file?.path.substring(7)
+
+      const result = await User.updateOne(
+        { _id: userId },
+        { $set: { profile_image: filePath } }
+      )
+      if (result.modifiedCount == 0) {
+        throw { status: 400, message: 'Update failed' }
+      }
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        message: 'Updated has done successfully'
+      })
     } catch (err) {
-      console.log(err.message)
       next(err)
     }
   }
