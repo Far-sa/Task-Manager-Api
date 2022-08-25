@@ -20,15 +20,15 @@ class ProjectController {
   }
   async getAllProject (req, res, next) {
     try {
-      const userId = req.user._id
-      const projects = await Project.find({ userId })
+      const owner = req.user._id
+      const projects = await Project.find({ owner })
       return res.status(200).json({
         status: 200,
         success: true,
         projects
       })
     } catch (err) {
-      next(err)
+      next(err) 
     }
   }
   getProjectById () {}
