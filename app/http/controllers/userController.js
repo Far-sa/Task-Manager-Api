@@ -4,6 +4,8 @@ class UserController {
   async getProfile (req, res, next) {
     try {
       const user = req.user
+      user.profile_image =
+        req.protocol + '://' + req.get('host') + '/' + user.profile_image
       return res.status(200).json({
         status: 200,
         success: true,
@@ -43,7 +45,7 @@ class UserController {
       const userId = req.user._id
 
       //? create file path for windows
-      //const filePath = req.file?.path.replace("\\\\", "/").substring(7)
+      //const filePath = req.file?.path.replace("/[\\\\]/gim, "/").substring(7)
       //? create file path for unix
       const filePath = req.file?.path.substring(7)
 
