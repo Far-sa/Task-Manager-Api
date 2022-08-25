@@ -28,7 +28,7 @@ class ProjectController {
         projects
       })
     } catch (err) {
-      next(err)
+      next(err) 
     }
   }
   async getProjectById (req, res, next) {
