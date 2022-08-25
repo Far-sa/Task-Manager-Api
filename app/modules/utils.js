@@ -3,6 +3,7 @@ const path = require('path')
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const { param } = require('express-validator')
 
 exports.hashString = str => {
   const salt = bcrypt.genSaltSync(10)
@@ -44,4 +45,12 @@ exports.createUploadPath = () => {
   )
   fs.mkdirSync(uploadPath, { recursive: true })
   return path.join('public', 'uploads', Year, Month, Day)
+}
+
+exports.mongoIdValidator = () => {
+  return [
+    param('id')
+      .isMongoId()
+      .withMessage('invalid id was sent')
+  ]
 }

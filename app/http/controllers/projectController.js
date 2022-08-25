@@ -20,8 +20,8 @@ class ProjectController {
   }
   async getAllProject (req, res, next) {
     try {
-      const userId = req.user._id
-      const projects = await Project.find({ userId })
+      const owner = req.user._id
+      const projects = await Project.find({ owner })
       return res.status(200).json({
         status: 200,
         success: true,
@@ -31,11 +31,44 @@ class ProjectController {
       next(err)
     }
   }
-  getProjectById () {}
+  async getProjectById (req, res, next) {
+    try {
+      const owner = req.user._id
+      const projectID = req.params.id
+      const project = await Project.findOne({ owner, _id: projectID })
+
+      if (!project) throw { status: 404, message: 'There is no project' }
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        project
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
+  async removeProject (req, res, next) {
+    try {
+      const owner = req.user._id
+      const projectID = req.params.id
+      const project = await Project.findOne({ owner, _id: projectID })
+      if (!project) throw { status: 404, message: 'There is no project' }
+
+      const deletedProject = await Project.deleteOne({ _id: projectID })
+      if (deletedProject.deletedCount === 0)
+        throw { status: 400, message: 'operation was not done ' }
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        message: 'project deleted successfully'
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
   getAllProjectsOfTeam () {}
   getProjectsOfUser () {}
   updateProject () {}
-  removeProject () {}
 }
 
 module.exports = { ProjectController: new ProjectController() }
