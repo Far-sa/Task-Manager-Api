@@ -3,9 +3,9 @@ const Project = require('../../models/project')
 class ProjectController {
   async createProject (req, res, next) {
     try {
-      const { title, body } = req.body
+      const { title, body, image, tags } = req.body
       const owner = req.user._id
-      const project = await Project.create({ title, body, owner })
+      const project = await Project.create({ title, body, owner, image, tags })
       if (!project)
         throw { status: 400, message: 'project has not been created' }
       res.status(201).json({

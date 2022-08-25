@@ -4,6 +4,8 @@ const { ProjectController } = require('../http/controllers/projectController')
 const { authenticated } = require('../http/middlewares/authenticate')
 const { expressErrorMapper } = require('../http/middlewares/validationErrors')
 const { projectCreateValidator } = require('../http/validation/project')
+const { imageValidator } = require('../http/validation/user')
+const { upload_multer } = require('../modules/multer')
 
 const router = express.Router()
 
@@ -21,6 +23,8 @@ router.get(
 router.post(
   '/create',
   authenticated,
+  upload_multer.single('image'),
+  imageValidator(),
   projectCreateValidator(),
   expressErrorMapper,
   ProjectController.createProject
