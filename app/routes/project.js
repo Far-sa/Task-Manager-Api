@@ -23,8 +23,6 @@ router.get(
 router.post(
   '/create',
   authenticated,
-  upload_multer.single('image'),
-  imageValidator(),
   projectCreateValidator(),
   expressErrorMapper,
   ProjectController.createProject

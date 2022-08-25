@@ -1,5 +1,4 @@
 const { body } = require('express-validator')
-const { imageValidator } = require('./user')
 
 exports.projectCreateValidator = () => {
   return [
