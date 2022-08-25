@@ -1,3 +1,6 @@
+const fs = require('fs')
+const path = require('path')
+
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
@@ -22,4 +25,23 @@ exports.verifyJwtToken = token => {
   if (!result.username)
     throw { status: 401, message: 'Please enter to your AccOUNT' }
   return result
+}
+
+exports.createUploadPath = () => {
+  let d = new Date()
+  const Year = '' + d.getFullYear()
+  const Month = '' + d.getMonth()
+  const Day = '' + d.getDate()
+  const uploadPath = path.join(
+    __dirname,
+    '..',
+    '..',
+    'public',
+    'uploads',
+    Year,
+    Month,
+    Day
+  )
+  fs.mkdirSync(uploadPath, { recursive: true })
+  return path.join('public', 'uploads', Year, Month, Day)
 }

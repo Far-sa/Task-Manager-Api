@@ -38,6 +38,14 @@ class UserController {
       next(err)
     }
   }
+  async uploadProfileImage (req, res, next) {
+    try {
+      console.log(req.file)
+    } catch (err) {
+      console.log(err.message)
+      next(err)
+    }
+  }
   addSkills () {}
   editSkills () {}
   acceptInviteInTeam () {}
