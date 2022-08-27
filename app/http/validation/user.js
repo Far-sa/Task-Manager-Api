@@ -9,7 +9,7 @@ exports.imageValidator = () => {
 
       const ext = path.extname(req.file.originalname)
       const exts = ['.jpg', '.png', '.gif', '.jpeg', '.webp']
-      if (exts.includes(ext)) throw 'Please upload an image with valid format'
+      if (!exts.includes(ext)) throw 'Please upload an image with valid format'
 
       const maxSize = 2 * 1024 * 1024
       if (req.file.size > maxSize) {

@@ -10,6 +10,18 @@ const { mongoIdValidator } = require('../modules/utils')
 
 const router = express.Router()
 
+//@ Description :Creates a new project
+//@ Route POST /project/create
+router.post(
+  '/create',
+  authenticated,
+  upload_multer.single('image'),
+  imageValidator(),
+  projectCreateValidator(),
+  expressErrorMapper,
+  ProjectController.createProject
+)
+
 //@ Description :GET all project
 //@ Route GET /project
 router.get(
@@ -40,7 +52,7 @@ router.delete(
 )
 
 //@ Description :Edit a project
-//@ Route GET /project/edit/:id
+//@ Route PUT /project/edit/:id
 router.put(
   '/edit/:id',
   authenticated,
@@ -49,14 +61,16 @@ router.put(
   ProjectController.updateProject
 )
 
-//@ Description :Creates a new project
-//@ Route POST /project/create
-router.post(
-  '/create',
+//@ Description :Edit a project's Image
+//@ Route PATCH /project/edit-projectImage/:id
+router.patch(
+  '/edit-project-image/:id',
   authenticated,
-  projectCreateValidator(),
+  upload_multer.single('image'),
+  imageValidator(),
+  mongoIdValidator(),
   expressErrorMapper,
-  ProjectController.createProject
+  ProjectController.updateProjectImage
 )
 
 module.exports = router

@@ -5,6 +5,10 @@ class ProjectController {
     try {
       const { title, body, image, tags } = req.body
       const owner = req.user._id
+
+      //? const image_path = path.join(createUploadPath() +Date.now())
+      //? req.body.image = image_path.substring(7)
+      
       const project = await Project.create({ title, body, owner, image, tags })
       if (!project)
         throw { status: 400, message: 'project has not been created' }
@@ -97,6 +101,29 @@ class ProjectController {
         status: 200,
         success: true,
         message: 'changes are done'
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
+  async updateProjectImage (req, res, next) {
+    try {
+      console.log(req.file)
+      const { image } = req.file
+
+      const owner = req.user._id
+      const projectId = req.params.id
+      await Project.findOne({ owner, _id: projectId })
+      const updatedProject = await Project.updateOne(
+        { _id: projectId },
+        { $set: { image } }
+      )
+      if (updatedProject.modifiedCount == 0)
+        throw { status: 400, message: 'No changes were made' }
+      res.status(200).json({
+        status: 200,
+        success: true,
+        message: 'Updated are done'
       })
     } catch (err) {
       next(err)
