@@ -28,7 +28,7 @@ class ProjectController {
         projects
       })
     } catch (err) {
-      next(err) 
+      next(err)
     }
   }
   async getProjectById (req, res, next) {
@@ -66,9 +66,44 @@ class ProjectController {
       next(err)
     }
   }
+  async updateProject (req, res, next) {
+    try {
+      const data = { ...req.body }
+      const owner = req.user._id
+      const projectId = req.params.id
+      const project = await Project.findOne({ owner, _id: projectId })
+      if (!project) throw { status: 404, message: 'project not found' }
+
+      Object.entries(data).forEach(([key, value]) => {
+        if (!['title', 'body', 'tags'].includes(key)) delete data[key]
+        if (['', ' ', '.', 0, null, undefined, NaN].includes(value))
+          delete data[key]
+
+        if (key == 'tags' && data['tags']?.constructor === Array) {
+          data['tags'] = data['tags'].filter(val => {
+            if (!['', ' ', ',', '.', 0, null, undefined, NaN].includes(val))
+              return val
+          })
+          if (data['tags'].length == 0) delete data['tags']
+        }
+      })
+      const updatedProject = await Project.updateOne(
+        { _id: projectId },
+        { $set: data }
+      )
+      if (updatedProject.modifiedCount == 0)
+        throw { status: 400, message: 'No changes were made' }
+      res.status(200).json({
+        status: 200,
+        success: true,
+        message: 'changes are done'
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
   getAllProjectsOfTeam () {}
   getProjectsOfUser () {}
-  updateProject () {}
 }
 
 module.exports = { ProjectController: new ProjectController() }
