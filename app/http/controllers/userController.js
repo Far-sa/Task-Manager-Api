@@ -77,6 +77,41 @@ class UserController {
       next(err)
     }
   }
+  async getAllRequests (req, res, next) {
+    try {
+      const userId = req.user._id
+      const { invitedRequests } = await User.findOne(
+        { _id: userId },
+        { invitedRequests: 1 }
+      )
+      res.status(200).json({
+        status: 200,
+        success: true,
+        requests: invitedRequests
+      })
+      // ? ():()
+    } catch (err) {
+      next(err)
+    }
+  }
+  async getPendingRequests (req, res, next) {
+    try {
+    } catch (err) {
+      next(err)
+    }
+  }
+  async getAcceptedRequests (req, res, next) {
+    try {
+    } catch (err) {
+      next(err)
+    }
+  }
+  async getRejectedRequests (req, res, next) {
+    try {
+    } catch (err) {
+      next(err)
+    }
+  }
   addSkills () {}
   editSkills () {}
   acceptInviteInTeam () {}

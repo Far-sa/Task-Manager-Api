@@ -10,6 +10,10 @@ const router = express.Router()
 
 router.get('/list', UserController.getAllUsers)
 
+// @ Description : user Requests
+// @ Route GET /user/request
+router.get('/request', authenticated, UserController.getAllRequests)
+
 // @ Description : user profile
 // @ Route GET /user/profile
 router.get('/profile', authenticated, UserController.getProfile)
