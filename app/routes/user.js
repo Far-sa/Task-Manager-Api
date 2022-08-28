@@ -8,6 +8,8 @@ const { upload_multer } = require('../modules/multer')
 
 const router = express.Router()
 
+router.get('/list', UserController.getAllUsers)
+
 // @ Description : user profile
 // @ Route GET /user/profile
 router.get('/profile', authenticated, UserController.getProfile)

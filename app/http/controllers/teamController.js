@@ -1,4 +1,5 @@
 const Team = require('../../models/team')
+const User = require('../../models/user')
 
 class TeamController {
   async createTeam (req, res, next) {
@@ -87,8 +88,60 @@ class TeamController {
       next(err)
     }
   }
+
+  //? https:anything.com/team/invite/:teamId/:username
+  async inviteUserToTeam (req, res, next) {
+    try {
+      const userId = req.user._id
+      const { username, teamId } = req.params
+      const team = await Team.findOne({
+        $or: [{ owner: userId }, { users: userId }],
+        _id: teamId
+      })
+      if (!team)
+        throw {
+          status: 400,
+          message: 'The current user is not on the mentioned team'
+        }
+      const user = await User.findOne({ username })
+      if (!user) throw { status: 404, message: 'There is no user for invite' }
+
+      const invitedUser = await Team.findOne({
+        $or: [{ owner: user._id }, { users: user._id }],
+        _id: teamId
+      })
+      if (invitedUser)
+        throw { status: 400, message: 'The User already in team' }
+        
+      const request = {
+        caller: req.user.username,
+        requestedDate: new Date(),
+        teamId,
+        status: 'pending'
+      }
+      const updatedUser = await User.updateOne(
+        { username },
+        {
+          $push: {
+            invitedRequests: request
+          }
+        }
+      )
+      if (updatedUser.modifiedCount == 0)
+        throw {
+          status: 500,
+          message: 'InviteRequest was not successfully done'
+        }
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        message: 'InviteRequest was successfully sent'
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
   updateTeam () {}
-  inviteUserToTeam () {}
   removeUserFromTeam () {}
 }
 

@@ -31,6 +31,15 @@ router.get(
 //@ Route GET /team/personal/:id
 router.get('/personal', authenticated, TeamController.getUserTeams)
 
+//@ Description :Invite user to team
+//@ Route GET /team/invite/:teamId/:username
+router.get(
+  '/invite/:teamId/:username',
+  authenticated,
+  mongoIdValidator(),
+  TeamController.inviteUserToTeam
+)
+
 //@ Description :Get a Team
 //@ Route GET /team/:id
 router.get(
