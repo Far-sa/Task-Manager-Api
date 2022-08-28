@@ -94,24 +94,38 @@ class UserController {
       next(err)
     }
   }
-  async getPendingRequests (req, res, next) {
+  async getRequestsByStatus (req, res, next) {
     try {
+      const userId = req.user._id
+      const { status } = req.params
+      const requests = await User.aggregate([
+        {
+          $match: { _id: userId }
+        },
+        {
+          $project: {
+            invitedRequests: 1,
+            _id: 0,
+            invitedRequests: {
+              $filter: {
+                input: '$invitedRequests',
+                as: 'request',
+                cond: ['$$request.status', status]
+              }
+            }
+          }
+        }
+      ])
+      res.status(200).json({
+        status: 200,
+        success: true,
+        requests: requests
+      })
     } catch (err) {
       next(err)
     }
   }
-  async getAcceptedRequests (req, res, next) {
-    try {
-    } catch (err) {
-      next(err)
-    }
-  }
-  async getRejectedRequests (req, res, next) {
-    try {
-    } catch (err) {
-      next(err)
-    }
-  }
+
   addSkills () {}
   editSkills () {}
   acceptInviteInTeam () {}
