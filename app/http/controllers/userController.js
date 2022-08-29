@@ -125,7 +125,36 @@ class UserController {
       next(err)
     }
   }
-
+  async changeRequestStatus (req, res, next) {
+    try {
+      const { id: requestId, status } = req.params
+      const request = await User.findOne({ 'invitedRequests._id': requestId })
+      if (!request) throw { status: 404, message: 'request not found' }
+      const findRequest = request.invitedRequests.find(
+        item => item.id == requestId
+      )
+      if (findRequest.status !== 'pending')
+        throw {
+          status: 400,
+          message: 'The requested has already been Accepted/Rejected'
+        }
+      if (!['accepted', 'rejected'].includes(status))
+        throw { status: 400, message: 'Wrong information' }
+      const updateRequest = await User.updateOne(
+        { 'invitedRequests._id': requestId },
+        { $set: { 'invitedRequests.$.status': status } }
+      )
+      if (updateRequest.modifiedCount == 0)
+        throw { status: 500, message: 'process failed' }
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        message: 'process succeed'
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
   addSkills () {}
   editSkills () {}
   acceptInviteInTeam () {}

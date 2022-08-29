@@ -14,10 +14,21 @@ router.get('/list', UserController.getAllUsers)
 // @ Route GET /user/request
 router.get('/request', authenticated, UserController.getAllRequests)
 
-
 // @ Description : user Requests
 // @ Route GET /user/request
-router.get('/requests/:status', authenticated, UserController.getRequestsByStatus)
+router.get(
+  '/requests/:status',
+  authenticated,
+  UserController.getRequestsByStatus
+)
+
+// @ Description : user Status Requests
+// @ Route GET /user/changeStatusRequest
+router.get(
+  '/change-status-request/:id/:status',
+  authenticated,
+  UserController.changeRequestStatus
+)
 
 // @ Description : user profile
 // @ Route GET /user/profile
