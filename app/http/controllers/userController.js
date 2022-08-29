@@ -80,10 +80,22 @@ class UserController {
   async getAllRequests (req, res, next) {
     try {
       const userId = req.user._id
-      const { invitedRequests } = await User.findOne(
-        { _id: userId },
-        { invitedRequests: 1 }
-      )
+      const invitedRequests = await User.aggregate([
+        {
+          $match: {
+            _id: userId
+          }
+        },
+
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'invitedRequests.caller',
+            foreignField: 'username',
+            as: 'invitedRequests.callerInfo'
+          }
+        }
+      ])
       res.status(200).json({
         status: 200,
         success: true,
