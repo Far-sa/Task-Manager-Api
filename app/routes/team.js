@@ -60,4 +60,13 @@ router.delete(
   TeamController.removeTeamById
 )
 
+//@ Description :Update a Team
+//@ Route DELETE /team/update/:teamId
+router.put(
+  '/update/:teamId',
+  authenticated,
+  mongoIdValidator(),
+  expressErrorMapper,
+  TeamController.updateTeam
+)
 module.exports = router

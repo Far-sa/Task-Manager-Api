@@ -112,7 +112,7 @@ class TeamController {
       })
       if (invitedUser)
         throw { status: 400, message: 'The User already in team' }
-        
+
       const request = {
         caller: req.user.username,
         requestedDate: new Date(),
@@ -141,7 +141,33 @@ class TeamController {
       next(err)
     }
   }
-  updateTeam () {}
+  async updateTeam (req, res, next) {
+    try {
+      const userId = req.user._id
+      const { teamId } = req.params
+
+      const data = { ...req.body }
+
+      Object.entries(data).forEach(([key, value]) => {
+        if (!data[key]) delete data[key]
+        if (['', ' ', null, NaN, undefined, 0].includes(data[key]))
+          delete data(key)
+      })
+      const team = await Team.fineOne({ owner: userId, _id: teamId })
+      if (!team) throw { status: 404, message: 'Team not found' }
+
+      const updateTeam = await Team.updateOne({ _id: teamId }, { $set: data })
+      if (updateTeam.modifiedCount == 0)
+        throw { status: 500, message: 'Update process failed' }
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        message: 'Team updated successfully'
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
   removeUserFromTeam () {}
 }
 
